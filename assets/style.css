@@ -25,6 +25,7 @@ body {
 .site-header {
   border-bottom: 1px solid var(--border);
   background: #f8fafc;
+  padding: 12px 0;
 }
 
 .name {

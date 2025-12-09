@@ -35,19 +35,20 @@ function renderProfileExtras(el) {
   const badge = document.createElement('div');
   badge.className = 'last-updated';
   badge.textContent = t;
-  const hasImg = el.querySelector('img');
-  if (!hasImg) {
-    loadAvatar().then(src => {
-      const img = document.createElement('img');
+  loadAvatar().then(src => {
+    let img = el.querySelector('img');
+    const isPlaceholder = img && (img.src || '').includes('placehold.co');
+    if (img) {
+      if (isPlaceholder) img.src = src;
+    } else {
+      img = document.createElement('img');
       img.src = src;
       el.insertBefore(img, el.firstChild);
-      el.appendChild(badge);
-    }).catch(() => {
-      el.appendChild(badge);
-    });
-  } else {
+    }
     el.appendChild(badge);
-  }
+  }).catch(() => {
+    el.appendChild(badge);
+  });
 }
 
 function loadAvatar() {
@@ -58,14 +59,15 @@ function loadAvatar() {
     'assets/images/avatar.webp'
   ];
   const fallback = 'https://placehold.co/240x240?text=Avatar';
-  return new Promise((resolve, reject) => {
+  return new Promise((resolve) => {
     let i = 0;
     function tryNext() {
       if (i >= candidates.length) { resolve(fallback); return; }
       const url = candidates[i++];
-      fetch(url, { method: 'HEAD' }).then(r => {
-        if (r.ok) resolve(url); else tryNext();
-      }).catch(() => tryNext());
+      const image = new Image();
+      image.onload = () => resolve(url);
+      image.onerror = () => tryNext();
+      image.src = url + '?cache-bust=' + Date.now();
     }
     tryNext();
   });
