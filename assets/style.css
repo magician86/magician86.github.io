@@ -131,6 +131,17 @@ li { margin: 6px 0; }
 .markdown a { color: var(--accent); text-decoration: none; }
 .markdown a:hover { text-decoration: underline; }
 
+.link-list a {
+  display: inline-block;
+  margin: 6px 6px 0 0;
+  padding: 8px 12px;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  color: var(--text);
+  text-decoration: none;
+}
+.link-list a:hover { border-color: var(--accent); color: var(--accent); }
+
 @media (max-width: 860px) {
   .layout { grid-template-columns: 1fr; }
 }
